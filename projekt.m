@@ -1,20 +1,21 @@
-%% Projekt Bayesianská analýza
+%% Projekt Bayesianska analyza
 clc;
 clear;
 close all;
 
 
-%% Naètení dat
+%% Nactení dat
 load('Slovakia_macro_data.mat');
 
-%% Vytvoøení upravených promìnných
-%meziroèní procentuální rùst realného GDP (už zkráceného o první období - kvùli zpozdìné promìnné)
+%% Vytvoreni upravených promennych
+% mezirocni procentualni rust realneho GDP (uz zkraceneho o 
+% prvni obdobi - kvuli zpozdene promenne)
 N_whole = length(DATE);
 GDP_diff = (GDP(5:end))./GDP(1:N_whole - 4) - 1;
 U_diff = (Uneployment(6:end))./Uneployment(2:N_whole - 4) - 1;
 GDP_diff_lag1 = GDP_diff(1:N_whole - 5);
 
-% výslednì použité promìnné (zkrácené)
+% vysledne pouzite promenne (zkracene)
 I = Inflation(6:end);
 DATE_short = DATE(6:end);
 U = Uneployment(6:end);

@@ -79,8 +79,8 @@ test_values = zeros(1,length(beta_0)); %nastavuju prislusne hodnoty, ktere testu
 [beta, h, SD_ratio, cng] = gibbs_sampler(y,X,beta_0, h_0, V_0, nu_0,test_vars, test_values);
 
 %%posteriorni analyza parametru beta
-beta_means = mean(beta,2)
-beta_sd = sqrt(var(beta,0,2))
+beta_means = mean(beta,2);
+beta_sd = sqrt(var(beta,0,2));
 
 fprintf('_________________________________________\n');
 for (i=1:length(test_vars))
@@ -97,16 +97,20 @@ HPDI_h = quantile(h,[0.025,0.975],2);
 
 fprintf('__________________________________________\n');
 fprintf('Souhrnné statistiky:\n');
-fprintf('Promìnná\tPrùmìr\t\tHPDI_low\t\tHPDI_high\n');
+fprintf('Promìnná\tPrùmìr\t\tSm. odchylka\t\tHPDI_low\t\tHPDI_high\t\tCD\n');
 for i=1:length(beta_0)
-    fprintf('beta_%d\t\t%6.4f\t\t%6.4f\t\t\t%6.4f\n',i,beta_means(i),HPDI_beta(i,:));
+    fprintf('beta_%d\t\t%6.4f\t\t\t%6.4f\t\t\t%6.4f\t\t\t%6.4f\t\t\t%6.4f\n',...
+        i,beta_means(i),beta_sd(i),HPDI_beta(i,:),cng.CD(i));
 end
+
 
 for i = 1:size(beta,1)
    subplot(3,ceil(length(beta_0)/3),i);
    hist(beta(i,:),100);
    title(X_var_names(i));
 end
-
+figure
+hist(h,100)
+title('h')
 
 

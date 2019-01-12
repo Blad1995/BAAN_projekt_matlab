@@ -49,7 +49,7 @@ X_var_names{5} = 'Inflation';
 X_var_names{6} = 'Interest rates';
 
 %% Prostor pro vyhozeni nekterych promennych
-ommit_index = [];
+ommit_index = [];   %index urcujici, ktere promenne vyhodim
 % ommit_index = [1,2,6];
 X_var_names(ommit_index) = [];
 %kdyz chci pouzit model s vynechanim nekterych promennych
@@ -58,16 +58,17 @@ X_var_names(ommit_index) = [];
    V_0(:,ommit_index) = [];
    V_0(ommit_index, :) = [];
 
-test_vars = 1:6;
-test_values = zeros(1,6);
+
+test_vars = 1:6; %nastavuji cisla promennych, ktere chci testovat
+test_values = zeros(1,6); %nastavuju prislusne hodnoty, ktere testuji
 [beta, h,SD_ratio] = gibbs_sampler(y,X,beta_0, h_0, V_0, nu_0,test_vars, test_values);
 
 %%posteriorni analyza parametru beta
-mean(beta,2)
-sqrt(var(beta,0,2))
+beta_means = mean(beta,2)
+beta_sd = sqrt(var(beta,0,2))
 
-for (i=1:length(test_vars)
-    fprintf('SD pomìr hustot pro model, kde promìnná è.%d=%d je rovný',...
+for (i=1:length(test_vars))
+    fprintf('SD pomìr hustot pro model, kde promìnná è.%d=%d je rovný %6.4f\n',...
         test_vars(i),test_values(i),SD_ratio(i));
 end
 

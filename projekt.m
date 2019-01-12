@@ -82,15 +82,31 @@ test_values = zeros(1,length(beta_0)); %nastavuju prislusne hodnoty, ktere testu
 beta_means = mean(beta,2)
 beta_sd = sqrt(var(beta,0,2))
 
+fprintf('_________________________________________\n');
 for (i=1:length(test_vars))
     fprintf('SD pomìr hustot pro model, kde promìnná è.%d=%d je rovný %6.4f\n',...
         test_vars(i),test_values(i),SD_ratio(i));
 end
 
+fprintf('__________________________________________\n');
 fprintf('CD statistika byla: %7.4f\n',cng.CD);
+
+%Intervaly najvyššej posteriórnej hustoty HPDI
+HPDI_beta = quantile(beta,[0.025,0.975],2);   
+HPDI_h = quantile(h,[0.025,0.975],2); 
+
+fprintf('__________________________________________\n');
+fprintf('Souhrnné statistiky:\n');
+fprintf('Promìnná\tPrùmìr\t\tHPDI_low\t\tHPDI_high\n');
+for i=1:length(beta_0)
+    fprintf('beta_%d\t\t%6.4f\t\t%6.4f\t\t\t%6.4f\n',i,beta_means(i),HPDI_beta(i,:));
+end
 
 for i = 1:size(beta,1)
    subplot(3,ceil(length(beta_0)/3),i);
    hist(beta(i,:),100);
    title(X_var_names(i));
 end
+
+
+

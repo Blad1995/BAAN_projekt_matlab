@@ -20,10 +20,9 @@ N = length(y);
 if(nargin == 8)
     fprintf('Obsahem testu SD pomeru hustot je rovnost:\n');
     for (i=1:length(test_vars))
-        fprintf('%d.promenne, ', test_vars(i));
-        fprintf('hodnote %d\n',test_value(i)); 
+        fprintf('Promenna è.%d=%d\n', test_vars(i),test_value(i));
     end
-    fprintf('___________________________________\n');
+    fprintf('_________________________________________\n');
     SD_nom = zeros(length(test_vars),S);
 end
 

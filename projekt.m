@@ -14,6 +14,8 @@ addpath('Support\');
 N_whole = length(DATE);
 GDP_diff = (GDP(5:end))./GDP(1:N_whole - 4) - 1;
 U_diff = (Uneployment(6:end))./Uneployment(2:N_whole - 4) - 1;
+I_diff = (Inflation(6:end))./Inflation(2:N_whole - 4) - 1;
+R_diff = (Interest_rates(6:end))./Interest_rates(2:N_whole - 4) - 1;
 GDP_diff_lag1 = GDP_diff(1:N_whole - 5);
 
 % vysledne pouzite promenne (zkracene)
@@ -28,8 +30,8 @@ N_final = length(GDP_diff);
 
 %% Stanovení apriorních parametrù
 
-beta_0 = [0; 1; -0.3; -0.3; -1; -2];
-V_0 = diag([0.5^2, 0.2^2, 0.8^2, 0.8^2, 2^2, 3^2]);
+beta_0 = [0; 1; -0.3; -0.3; -1; -1; -2; -2];
+V_0 = diag([0.5^2, 0.2^2, 0.8^2, 0.8^2, 2^2, 2^2, 3^2, 3^2]);
 nu_0 = 3;
 s2_0 = 0.5^2;      %apriorni rozptyl nahodnych slozek - 
                   %teda smerodajná dochylka 10 (náhodná chyba má rozdelení N(0,s^2))
@@ -38,7 +40,7 @@ h_0 = 1/s2_0;   %apriorni presnost chyby
 
 %% Definice promìnnych pro model
 y = GDP_diff;    %vysvetlovana promenna
-X = [ones(N_final,1), GDP_diff_lag1, U, U_diff, I, R];  %vysvetlujici promenne
+X = [ones(N_final,1), GDP_diff_lag1, U, U_diff, I, I_diff, R, R_diff];  %vysvetlujici promenne
 
 X_var_names = cell(1,6);
 X_var_names{1} = 'Konstanta';
@@ -46,7 +48,9 @@ X_var_names{2} = 'Y_{t-1}';
 X_var_names{3} = 'Unemployment';
 X_var_names{4} = 'Unemployment difference';
 X_var_names{5} = 'Inflation'; 
-X_var_names{6} = 'Interest rates';
+X_var_names{6} = 'Inflation difference'; 
+X_var_names{7} = 'Interest rates';
+X_var_names{8} = 'Interest rates difference';
 
 %% Prostor pro vyhozeni nekterych promennych
 ommit_index = [];   %index urcujici, ktere promenne vyhodim
@@ -59,9 +63,9 @@ X_var_names(ommit_index) = [];
    V_0(ommit_index, :) = [];
 
 
-test_vars = 1:6; %nastavuji cisla promennych, ktere chci testovat
-test_values = zeros(1,6); %nastavuju prislusne hodnoty, ktere testuji
-[beta, h,SD_ratio] = gibbs_sampler(y,X,beta_0, h_0, V_0, nu_0,test_vars, test_values);
+test_vars = 1:8; %nastavuji cisla promennych, ktere chci testovat
+test_values = zeros(1,8); %nastavuju prislusne hodnoty, ktere testuji
+[beta, h, SD_ratio, cng] = gibbs_sampler(y,X,beta_0, h_0, V_0, nu_0,test_vars, test_values);
 
 %%posteriorni analyza parametru beta
 beta_means = mean(beta,2)
@@ -77,6 +81,3 @@ for i = 1:size(beta,1)
    hist(beta(i,:),100);
    title(X_var_names(i));
 end
-
-
-

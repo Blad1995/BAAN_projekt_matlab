@@ -1,4 +1,4 @@
-function [beta, h, SD_ratio] = gibbs_sampler(y,X, beta_0, h_0,V_0, nu_0, test_vars,test_value)
+function [beta, h, SD_ratio, cng] = gibbs_sampler(y,X, beta_0, h_0,V_0, nu_0, test_vars,test_value)
 
 if (nargin < 6)
    error('Spatny pocet argumentu: gibbs_sampler(y,X, beta_0, h_0,V_0, nu_0,test_vars,test_value)'); 
@@ -68,4 +68,7 @@ end
     beta(:,1:S_0) = [];
     h(:,1:S_0) = []; 
     
+%Gewekeho konvergencna diagnostika 
+cng = Geweke([beta' h']);
+
 end

@@ -102,7 +102,8 @@ for i=1:length(beta_0)
     fprintf('beta_%d\t\t%6.4f\t\t\t%6.4f\t\t\t%6.4f\t\t\t%6.4f\t\t\t%6.4f\n',...
         i,beta_means(i),beta_sd(i),HPDI_beta(i,:),cng.CD(i));
 end
-
+fprintf('h\t\t\t%6.4f\t\t%6.4f\t\t\t\t\t\t\t\t\t\t%6.4f\t\t\t%6.4f\n',...
+        mean(h),sqrt(var(h)),cng.CD(i));
 
 for i = 1:size(beta,1)
    subplot(3,ceil(length(beta_0)/3),i);
@@ -113,4 +114,17 @@ figure
 hist(h,100)
 title('h')
 
+%zobrazenie konvergencie
+figure 
+for ii=1:length(beta_0)
+    subplot(3,2,ii)
+    plot(beta(ii,1:500:end))
+    axis([0 66 -inf inf])
+    ylabel(['\beta_',num2str(ii)])
+end
+
+figure
+plot(h(:,1:500:end))
+axis([0 66 -inf inf])
+ylabel('h')						
 

@@ -11,20 +11,26 @@ addpath('Support\');
 %% Vytvoreni upravených promennych
 % mezirocni procentualni rust realneho GDP (uz zkraceneho o 
 % prvni obdobi - kvuli zpozdene promenne)
-N_whole = length(DATE);
-GDP_diff = (GDP(5:end))./GDP(1:N_whole - 4) - 1;
-U_diff = (Uneployment(6:end))./Uneployment(2:N_whole - 4) - 1;
-I_diff = (Inflation(6:end))./Inflation(2:N_whole - 4) - 1;
-R_diff = (Interest_rates(6:end))./Interest_rates(2:N_whole - 4) - 1;
-GDP_diff_lag1 = GDP_diff(1:N_whole - 5);
+GDP_diff = (GDP(5:end))./GDP(1:end - 4) - 1;
+U_diff = (Uneployment(6:end))- Uneployment(2:end - 4);
+I_diff_a = (Inflation_interannual(6:end)) - Inflation_interannual(2:end - 4);
+R_diff = (Interest_rates(6:end)) - Interest_rates(2:end - 4);
+GDP_diff_lag1 = GDP_diff(1:end - 5);
 
-% vysledne pouzite promenne (zkracene)
-I = Inflation(6:end);
-DATE_short = DATE(6:end);
-U = Uneployment(6:end);
-R = Interest_rates(6:end);
+% nakonec jsme radeji pouzili mezictvrtletni rozdily
+% lepsi charakteristiky tykajici se stacionarity
+% vynechali jsme prvni dve pozorovani kvuli tvorbe *_diff promennych (1. pozorovani) a
+% kvuli zpozdene promenne GDP_diff_lag1 (2. pozorovani)
+GDP_diff = (GDP(2:end))./GDP(1:end - 1) - 1;
+U_diff = (Uneployment(3:end)) -Uneployment(2:end - 1);
+I_diff = (Inflation(3:end)) - Inflation(2:end - 1);
+R_diff = (Interest_rates(3:end)) - Interest_rates(2:end - 1);
+GDP_diff_lag1 = GDP_diff(1:end - 1);
+I = Inflation(3:end);
+DATE_short = DATE(3:end);
+U = Uneployment(3:end);
+R = Interest_rates(3:end);
 GDP_diff = GDP_diff(2:end);
-
 
 N_final = length(GDP_diff);
 
@@ -53,7 +59,7 @@ X_var_names{7} = 'Interest rates';
 X_var_names{8} = 'Interest rates difference';
 
 %% Prostor pro vyhozeni nekterych promennych
-ommit_index = [];   %index urcujici, ktere promenne vyhodim
+ommit_index = [2,3,5,6,8];   %index urcujici, ktere promenne vyhodim
 % ommit_index = [1,2,6];
 X_var_names(ommit_index) = [];
 %kdyz chci pouzit model s vynechanim nekterych promennych
@@ -63,8 +69,8 @@ X_var_names(ommit_index) = [];
    V_0(ommit_index, :) = [];
 
 
-test_vars = 1:8; %nastavuji cisla promennych, ktere chci testovat
-test_values = zeros(1,8); %nastavuju prislusne hodnoty, ktere testuji
+test_vars = 1:length(beta_0); %nastavuji cisla promennych, ktere chci testovat
+test_values = zeros(1,length(beta_0)); %nastavuju prislusne hodnoty, ktere testuji
 [beta, h, SD_ratio, cng] = gibbs_sampler(y,X,beta_0, h_0, V_0, nu_0,test_vars, test_values);
 
 %%posteriorni analyza parametru beta

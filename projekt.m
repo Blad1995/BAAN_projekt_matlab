@@ -48,18 +48,34 @@ X_var_names{4} = 'Unemployment difference';
 X_var_names{5} = 'Inflation'; 
 X_var_names{6} = 'Interest rates';
 
-ommit_index = [1,2,6];
+%% Prostor pro vyhozeni nekterych promennych
+ommit_index = [];
+% ommit_index = [1,2,6];
 X_var_names(ommit_index) = [];
-[beta, h] = gibbs_sampler(y,X,beta_0, h_0, V_0, nu_0, ommit_index);
+%kdyz chci pouzit model s vynechanim nekterych promennych
+   X(:, ommit_index) = [];
+   beta_0(ommit_index) = [];
+   V_0(:,ommit_index) = [];
+   V_0(ommit_index, :) = [];
 
-%posteriorni analyza
+test_vars = 1:6;
+test_values = zeros(1,6);
+[beta, h,SD_ratio] = gibbs_sampler(y,X,beta_0, h_0, V_0, nu_0,test_vars, test_values);
+
+%%posteriorni analyza parametru beta
 mean(beta,2)
-var(beta,0,2)
+sqrt(var(beta,0,2))
 
+for (i=1:length(test_vars)
+    fprintf('SD pomìr hustot pro model, kde promìnná è.%d=%d je rovný',...
+        test_vars(i),test_values(i),SD_ratio(i));
+end
 
 for i = 1:size(beta,1)
    figure
    hist(beta(i,:),100);
    title(X_var_names(i));
 end
+
+
 

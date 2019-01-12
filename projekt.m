@@ -23,6 +23,7 @@ U = Uneployment(6:end);
 R = Interest_rates(6:end);
 GDP_diff = GDP_diff(2:end);
 
+
 N_final = length(GDP_diff);
 
 %% Stanovení apriorních parametrù
@@ -39,8 +40,26 @@ h_0 = 1/s2_0;   %apriorni presnost chyby
 y = GDP_diff;    %vysvetlovana promenna
 X = [ones(N_final,1), GDP_diff_lag1, U, U_diff, I, R];  %vysvetlujici promenne
 
+X_var_names = cell(1,6);
+X_var_names{1} = 'Konstanta';
+X_var_names{2} = 'Y_{t-1}';
+X_var_names{3} = 'Unemployment';
+X_var_names{4} = 'Unemployment difference';
+X_var_names{5} = 'Inflation'; 
+X_var_names{6} = 'Interest rates';
+
+ommit_index = [1,2,6];
+X_var_names(ommit_index) = [];
+[beta, h] = gibbs_sampler(y,X,beta_0, h_0, V_0, nu_0, ommit_index);
+
+%posteriorni analyza
+mean(beta,2)
+var(beta,0,2)
 
 
-[beta, h] = gibbs_sampler(y,X,beta_0, h_0, V_0, nu_0, [2,3,4]);
-
+for i = 1:size(beta,1)
+   figure
+   hist(beta(i,:),100);
+   title(X_var_names(i));
+end
 

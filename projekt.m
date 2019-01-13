@@ -83,15 +83,17 @@ test_values = zeros(1,length(beta_0)); %nastavuju prislusne hodnoty, ktere testu
 %pocet vzorku S1 = length(h)
 S1 = length(h);
 
+
+%% Testovani hypotezy
 if (size(ommit_index) == [1 2] & ommit_index == [5,7])
     % testovani hypotezy v modelu s Inflaci
     % hypoteza o negativnom vplyve inflacie Beta 4 < 0
-    pc = sum(beta(4,:)<=0)/S1;
-    fprintf('\n Pravdepodobnost beta_4 <= 0 a odpovidajici Bayesuv faktor\n')
+    pc = sum(beta(4,:) < 0)/S1;
+    fprintf('\n Pravdepodobnost beta_4 < 0 a odpovidajici Bayesuv faktor\n')
     fprintf('pc = %6.4f      BF = %6.4f\n',pc,pc/(1-pc))
 end
 
-%%posteriorni analyza parametru beta
+%% posteriorni analyza parametru beta
 beta_means = mean(beta,2);
 beta_sd = sqrt(var(beta,0,2));
 fprintf('_________________________________________\n');
@@ -104,10 +106,12 @@ fprintf('__________________________________________\n');
 for (i = 1:length(cng.CD)-1)
     fprintf('CD statistika promìnné beta_%s byla: %7.4f\n',X_var_names{i},cng.CD(i));
 end
+
 %Intervaly najvyššej posteriórnej hustoty HPDI
 HPDI_beta = quantile(beta,[0.025,0.975],2);
 HPDI_h = quantile(h,[0.025,0.975],2);
 
+%% Vykresleni vysledku - tabulky a grafy
 fprintf('__________________________________________\n');
 fprintf('Souhrnné statistiky:\n');
 fprintf('Promìnná\tPrùmìr\t\tSm. odchylka\t\tHPDI_low\t\tHPDI_high\t\tCD\n');
@@ -127,19 +131,21 @@ figure
 hist(h,100)
 title('h')
 
-%zobrazenie konvergencie
+%% zobrazenie konvergencie
 figure
 for ii=1:length(beta_0)
-    subplot(3,2,ii)
-    plot(beta(ii,1:500:end))
-    axis([0 66 -inf inf])
-    ylabel(['\beta_',num2str(ii)])
+    subplot(3,2,ii);
+    plot(beta(ii,1:500:end));
+    axis([0 66 -inf inf]);
+    ylabel(['\beta_',num2str(ii)]);
+    title(['Zobrazeni konvergence \beta_',num2str(ii)]);
 end
 
 figure
 plot(h(:,1:500:end))
 axis([0 66 -inf inf])
 ylabel('h')
+title('Zobrazeni konvergence h');
 
 
 %% Simulace

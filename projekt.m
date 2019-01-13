@@ -80,16 +80,17 @@ beta_sd = sqrt(var(beta,0,2));
 
 fprintf('_________________________________________\n');
 for (i=1:length(test_vars))
-    fprintf('SD pomìr hustot pro model, kde promìnná è.%d=%d je rovný %6.4f\n',...
-        test_vars(i),test_values(i),SD_ratio(i));
+    fprintf('SD pomìr hustot pro omezený model,\nkde promìnná beta_%s = %d je rovný %6.4f\n\n',...
+        X_var_names{i},test_values(i),SD_ratio(i));
 end
 
 fprintf('__________________________________________\n');
-fprintf('CD statistika byla: %7.4f\n',cng.CD);
-
+for (i = 1:length(cng.CD)-1)
+    fprintf('CD statistika promìnné beta_%s byla: %7.4f\n',X_var_names{i},cng.CD(i));
+end
 %Intervaly najvyššej posteriórnej hustoty HPDI
 HPDI_beta = quantile(beta,[0.025,0.975],2);   
-HPDI_h = quantile(h,[0.025,0.975],2); 
+HPDI_h = quantile(h,[0.025,0.975],2);
 
 fprintf('__________________________________________\n');
 fprintf('Souhrnné statistiky:\n');

@@ -112,6 +112,10 @@ HPDI_beta = quantile(beta,[0.025,0.975],2);
 HPDI_h = quantile(h,[0.025,0.975],2);
 
 %% Vykresleni vysledku - tabulky a grafy
+%apriorni str. hodnoty a sm. odchylky
+%beta_0, h0 - apriorni str. hodnoty
+std_beta_0 = sqrt(diag(V_0)); %vektor apriornich sm. odchylek beta
+std_h_0 = sqrt(2*h_0^2/nu_0); %apriorni sm. odchylka presnosti chyby
 fprintf('__________________________________________\n');
 fprintf('Souhrnné statistiky:\n');
 fprintf('Promìnná\tPrùmìr\t\tSm. odchylka\t\tHPDI_low\t\tHPDI_high\t\tCD\n');
@@ -119,8 +123,8 @@ for i=1:length(beta_0)
     fprintf('beta_%d\t\t%6.4f\t\t\t%6.4f\t\t\t%6.4f\t\t\t%6.4f\t\t\t%6.4f\n',...
         i,beta_means(i),beta_sd(i),HPDI_beta(i,:),cng.CD(i));
 end
-fprintf('h\t\t\t%6.4f\t\t%6.4f\t\t\t\t\t\t\t\t\t\t%6.4f\n',...
-    mean(h),sqrt(var(h)),cng.CD(length(beta_0)+1));
+fprintf('h\t\t\t%6.4f\t\t%6.4f\t\t%6.4f\t\t%6.4f\t\t%6.4f\n',...
+    mean(h),sqrt(var(h)),HPDI_h(1),HPDI_h(2),cng.CD(length(beta_0)+1));
 
 for i = 1:size(beta,1)
     subplot(3,ceil(length(beta_0)/3),i);
@@ -134,11 +138,11 @@ title('h')
 %% zobrazenie konvergencie
 figure
 for ii=1:length(beta_0)
-    subplot(3,2,ii);
+    subplot(3,ceil(length(beta_0)/3),ii);
     plot(beta(ii,1:500:end));
     axis([0 66 -inf inf]);
     ylabel(['\beta_',num2str(ii)]);
-    title(['Zobrazeni konvergence \beta_',num2str(ii)]);
+    title(['Zobrazeni konvergence \beta_{',X_var_names{i},'}']);
 end
 
 figure

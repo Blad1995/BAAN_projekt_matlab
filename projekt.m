@@ -14,13 +14,14 @@ DATE = datetime(DATE,'InputFormat','dd.MM.yyyy');
 % prvni obdobi - kvuli zpozdene promenne)
 GDP_diff = (GDP(5:end))./GDP(1:end - 4) - 1;
 
-% U_diff = (Uneployment(5:end))- Uneployment(1:end - 4);
-% I_diff_a = (Inflation_interannual(5:end)) - Inflation_interannual(1:end - 4);
-% R_diff = (Interest_rates(5:end)) - Interest_rates(1:end - 4);
+U_diff = (Uneployment(5:end))- Uneployment(1:end - 4);
+I_diff_a = (Inflation_interannual(5:end)) - Inflation_interannual(1:end - 4);
+R_diff = (Interest_rates(5:end)) - Interest_rates(1:end - 4);
 
-U_diff = (Uneployment(5:end))./ Uneployment(1:end - 4) - 1;
-I_diff_a = (Inflation_interannual(5:end))./ Inflation_interannual(1:end - 4) - 1;
-R_diff = (Interest_rates(5:end))./ Interest_rates(1:end - 4) - 1;
+% % pøípadnì by se daly využít procentuální zmìny
+% U_diff = (Uneployment(5:end))./ Uneployment(1:end - 4) - 1;
+% I_diff_a = (Inflation_interannual(5:end))./ Inflation_interannual(1:end - 4) - 1;
+% R_diff = (Interest_rates(5:end))./ Interest_rates(1:end - 4) - 1;
 
 % nakonec jsme radeji pouzili mezictvrtletni rozdily
 % lepsi charakteristiky tykajici se stacionarity
@@ -66,9 +67,9 @@ X_var_names{7} = 'Interest rates difference';
 
 %% Prostor pro vyhozeni nekterych promennych
 %index urcujici, ktere promenne vyhodim
-ommit_index = [4,5,7]; %model bez Inflace
-% ommit_index = [5,7]; %model s Inflace
-% ommit_index = [] %plný model
+% ommit_index = [2,4,5]; %model bez Unemployment
+ ommit_index = [4,5]; %model s Unemployment
+%  ommit_index = [] %plný model
 X_var_names(ommit_index) = [];
 %kdyz chci pouzit model s vynechanim nekterych promennych
 X(:, ommit_index) = [];
@@ -86,11 +87,11 @@ S1 = length(h);
 
 
 %% Testovani hypotezy
-if (size(ommit_index) == [1 2] & ommit_index == [5,7])
-    % testovani hypotezy v modelu s Inflaci
-    % hypoteza o negativnom vplyve inflacie Beta 4 < 0
-    pc = sum(beta(4,:) < 0)/S1;
-    fprintf('\n Pravdepodobnost beta_4 < 0 a odpovidajici Bayesuv faktor\n')
+if (size(ommit_index) == [1 2] & ommit_index == [4, 5])
+    % testovani hypotezy v modelu s Unemployment
+    % hypoteza o negativnom vplyve nezamestnanosti Beta 2 <= 0
+    pc = sum(beta(2,:) <= 0)/S1;
+    fprintf('\n Pravdepodobnost beta_4 <= 0 a odpovidajici Bayesuv faktor\n')
     fprintf('pc = %6.4f      BF = %6.4f\n',pc,pc/(1-pc))
 end
 

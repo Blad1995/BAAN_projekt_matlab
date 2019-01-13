@@ -10,7 +10,7 @@ addpath('Support\');
 DATE = datetime(DATE,'InputFormat','dd.MM.yyyy');
 
 %% Vytvoreni upraven˝ch promennych
-% mezirocni procentualni rust realneho GDP (uz zkraceneho o 
+% mezirocni procentualni rust realneho GDP (uz zkraceneho o
 % prvni obdobi - kvuli zpozdene promenne)
 GDP_diff = (GDP(5:end))./GDP(1:end - 4) - 1;
 U_diff = (Uneployment(5:end))- Uneployment(1:end - 4);
@@ -43,9 +43,9 @@ beta_0 = [0;-0.7; -0.2; -1; -1; -2; -2];
 V_0 = diag([0.5^2, 0.8^2, 0.8^2, 2^2, 2^2, 3^2, 3^2]);
 nu_0 = 15;
 s2_0 = var(GDP_diff./4) ;   %tohle je zkouska jestli by to davalo smysl cca
-% s2_0 = 0.05^2;    %apriorni rozptyl nahodnych slozek - 
-                  %teda smerodajn· dochylka 10 (n·hodn· chyba m· rozdelenÌ N(0,s^2))
-                  %- mohla by byù aj menöia ak by som viac veril svojmu modelu 
+% s2_0 = 0.05^2;    %apriorni rozptyl nahodnych slozek -
+%teda smerodajn· dochylka 10 (n·hodn· chyba m· rozdelenÌ N(0,s^2))
+%- mohla by byù aj menöia ak by som viac veril svojmu modelu
 h_0 = 1/s2_0;   %apriorni presnost chyby
 
 %% Definice promÏnnych pro model
@@ -56,8 +56,8 @@ X_var_names = cell(1,6);
 X_var_names{1} = 'Konstanta';
 X_var_names{2} = 'Unemployment';
 X_var_names{3} = 'Unemployment difference';
-X_var_names{4} = 'Inflation'; 
-X_var_names{5} = 'Inflation difference'; 
+X_var_names{4} = 'Inflation';
+X_var_names{5} = 'Inflation difference';
 X_var_names{6} = 'Interest rates';
 X_var_names{7} = 'Interest rates difference';
 
@@ -67,10 +67,10 @@ X_var_names{7} = 'Interest rates difference';
 ommit_index = [4,5,7];   %index urcujici, ktere promenne vyhodim
 X_var_names(ommit_index) = [];
 %kdyz chci pouzit model s vynechanim nekterych promennych
-   X(:, ommit_index) = [];
-   beta_0(ommit_index) = [];
-   V_0(:,ommit_index) = [];
-   V_0(ommit_index, :) = [];
+X(:, ommit_index) = [];
+beta_0(ommit_index) = [];
+V_0(:,ommit_index) = [];
+V_0(ommit_index, :) = [];
 
 
 test_vars = 1:length(beta_0); %nastavuji cisla promennych, ktere chci testovat
@@ -91,7 +91,7 @@ for (i = 1:length(cng.CD)-1)
     fprintf('CD statistika promÏnnÈ beta_%s byla: %7.4f\n',X_var_names{i},cng.CD(i));
 end
 %Intervaly najvyööej posteriÛrnej hustoty HPDI
-HPDI_beta = quantile(beta,[0.025,0.975],2);   
+HPDI_beta = quantile(beta,[0.025,0.975],2);
 HPDI_h = quantile(h,[0.025,0.975],2);
 
 fprintf('__________________________________________\n');
@@ -102,19 +102,19 @@ for i=1:length(beta_0)
         i,beta_means(i),beta_sd(i),HPDI_beta(i,:),cng.CD(i));
 end
 fprintf('h\t\t\t%6.4f\t\t%6.4f\t\t\t\t\t\t\t\t\t\t%6.4f\n',...
-        mean(h),sqrt(var(h)),cng.CD(length(beta_0)+1));
+    mean(h),sqrt(var(h)),cng.CD(length(beta_0)+1));
 
 for i = 1:size(beta,1)
-   subplot(3,ceil(length(beta_0)/3),i);
-   hist(beta(i,:),100);
-   title(['Simulovane hodnoty \beta_{',X_var_names{i},'}']);
+    subplot(3,ceil(length(beta_0)/3),i);
+    hist(beta(i,:),100);
+    title(['Simulovane hodnoty \beta_{',X_var_names{i},'}']);
 end
 figure
 hist(h,100)
 title('h')
 
 %zobrazenie konvergencie
-figure 
+figure
 for ii=1:length(beta_0)
     subplot(3,2,ii)
     plot(beta(ii,1:500:end))
@@ -125,7 +125,7 @@ end
 figure
 plot(h(:,1:500:end))
 axis([0 66 -inf inf])
-ylabel('h')						
+ylabel('h')
 
 
 %% Simulace
@@ -141,11 +141,9 @@ std_y_pred = sqrt(var(y_pred,0,2));
 
 %vykresleni simulovanych hodnot vuci puvodnim
 figure
-    plot(datenum(DATE_short),[y, E_y_pred])
-    title('Vykresleni puvodnich hodnot GDP_{diff} vuci simulovanym');
-    legend('Puvodni hodnota','Simulovane hodnoty');
-    datetick('x','yyyy','keepticks');
-    xlabel('rok');
-    ylabel('GDP_{diff}');
-    
-
+plot(datenum(DATE_short),[y, E_y_pred])
+title('Vykresleni puvodnich hodnot GDP_{diff} vuci simulovanym');
+legend('Puvodni hodnota','Simulovane hodnoty');
+datetick('x','yyyy','keepticks');
+xlabel('rok');
+ylabel('GDP_{diff}');

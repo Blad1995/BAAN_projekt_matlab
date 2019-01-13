@@ -7,6 +7,7 @@ close all;
 %% Nactení dat
 load('Slovakia_macro_data.mat');
 addpath('Support\');
+DATE = datetime(DATE,'InputFormat','dd.MM.yyyy');
 
 %% Vytvoreni upravených promennych
 % mezirocni procentualni rust realneho GDP (uz zkraceneho o 
@@ -60,6 +61,8 @@ X_var_names{5} = 'Inflation difference';
 X_var_names{6} = 'Interest rates';
 X_var_names{7} = 'Interest rates difference';
 
+
+
 %% Prostor pro vyhozeni nekterych promennych
 ommit_index = [4,5,7];   %index urcujici, ktere promenne vyhodim
 X_var_names(ommit_index) = [];
@@ -77,10 +80,9 @@ test_values = zeros(1,length(beta_0)); %nastavuju prislusne hodnoty, ktere testu
 %%posteriorni analyza parametru beta
 beta_means = mean(beta,2);
 beta_sd = sqrt(var(beta,0,2));
-
 fprintf('_________________________________________\n');
 for (i=1:length(test_vars))
-    fprintf('SD pomìr hustot pro omezený model,\nkde promìnná beta_%s = %d je rovný %6.4f\n\n',...
+    fprintf('SD pomìr hustot pro omezený model,\nkde promìnná beta_{%s} = %d je rovný %6.4f\n\n',...
         X_var_names{i},test_values(i),SD_ratio(i));
 end
 
@@ -105,7 +107,7 @@ fprintf('h\t\t\t%6.4f\t\t%6.4f\t\t\t\t\t\t\t\t\t\t%6.4f\n',...
 for i = 1:size(beta,1)
    subplot(3,ceil(length(beta_0)/3),i);
    hist(beta(i,:),100);
-   title(X_var_names(i));
+   title(['Simulovane hodnoty \beta_{',X_var_names{i},'}']);
 end
 figure
 hist(h,100)
@@ -124,4 +126,26 @@ figure
 plot(h(:,1:500:end))
 axis([0 66 -inf inf])
 ylabel('h')						
+
+
+%% Simulace
+%pocet vzorku S1 = length(h)
+S1 = length(h);
+y_pred = zeros(N_final,S1);
+for s=1:S1
+    y_pred(:,s)= X*beta(:,s)+randn(length(y),1)*sqrt(1/h(s));
+end
+E_y_pred = mean(y_pred,2);
+std_y_pred = sqrt(var(y_pred,0,2));
+
+
+%vykresleni simulovanych hodnot vuci puvodnim
+figure
+    plot(datenum(DATE_short),[y, E_y_pred])
+    title('Vykresleni puvodnich hodnot GDP_{diff} vuci simulovanym');
+    legend('Puvodni hodnota','Simulovane hodnoty');
+    datetick('x','yyyy','keepticks');
+    xlabel('rok');
+    ylabel('GDP_{diff}');
+    
 

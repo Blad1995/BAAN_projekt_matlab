@@ -13,12 +13,13 @@ DATE = datetime(DATE,'InputFormat','dd.MM.yyyy');
 % mezirocni procentualni rust realneho GDP (uz zkraceneho o
 % prvni obdobi - kvuli zpozdene promenne)
 GDP_diff = (GDP(5:end))./GDP(1:end - 4) - 1;
-U_diff = (Uneployment(5:end))- Uneployment(1:end - 4);
-I_diff_a = (Inflation_interannual(5:end)) - Inflation_interannual(1:end - 4);
-% R_diff = (Interest_rates(6:end)) - Interest_rates(2:end - 4);
 
-% U_diff = (Uneployment(6:end))./ Uneployment(2:end - 4) - 1;
-% I_diff_a = (Inflation_interannual(6:end))./ Inflation_interannual(2:end - 4) - 1;
+% U_diff = (Uneployment(5:end))- Uneployment(1:end - 4);
+% I_diff_a = (Inflation_interannual(5:end)) - Inflation_interannual(1:end - 4);
+% R_diff = (Interest_rates(5:end)) - Interest_rates(1:end - 4);
+
+U_diff = (Uneployment(5:end))./ Uneployment(1:end - 4) - 1;
+I_diff_a = (Inflation_interannual(5:end))./ Inflation_interannual(1:end - 4) - 1;
 R_diff = (Interest_rates(5:end))./ Interest_rates(1:end - 4) - 1;
 
 % nakonec jsme radeji pouzili mezictvrtletni rozdily
@@ -65,8 +66,8 @@ X_var_names{7} = 'Interest rates difference';
 
 %% Prostor pro vyhozeni nekterych promennych
 %index urcujici, ktere promenne vyhodim
-% ommit_index = [4,5,7]; %model bez Inflace
-ommit_index = [5,7]; %model s Inflace
+ommit_index = [4,5,7]; %model bez Inflace
+% ommit_index = [5,7]; %model s Inflace
 % ommit_index = [] %plný model
 X_var_names(ommit_index) = [];
 %kdyz chci pouzit model s vynechanim nekterych promennych

@@ -153,6 +153,9 @@ y_pred = zeros(N_final,S1);
 for s=1:S1
     y_pred(:,s)= X*beta(:,s)+randn(length(y),1)*sqrt(1/h(s));
 end
+%jiny zpusob generovani odhadovanych hodnnot
+% E_y_pred1 = X*beta_means;
+
 E_y_pred = mean(y_pred,2);
 std_y_pred = sqrt(var(y_pred,0,2));
 
